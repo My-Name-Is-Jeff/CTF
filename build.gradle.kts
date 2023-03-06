@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.6.20"
+    kotlin("jvm") version "1.8.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.papermc.paperweight.userdev") version "1.3.5"
-    id("xyz.jpenilla.run-paper") version "1.0.6"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
+    id("io.papermc.paperweight.userdev") version "1.5.2"
+    id("xyz.jpenilla.run-paper") version "2.0.1"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
 }
 
 repositories {
@@ -26,35 +26,34 @@ val shadowMe by configurations.creating {
     configurations.implementation.get().extendsFrom(this)
 }
 dependencies {
-    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
+/*
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    shadowMe("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    shadowMe("org.jetbrains.kotlin:kotlin-stdlib")
     shadowMe("org.jetbrains.kotlin:kotlin-reflect")
-    shadowMe("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    shadowMe("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+*/
 
-    implementation("org.inventivetalent:glowapi:1.5.3-SNAPSHOT")
-    implementation("org.inventivetalent.packetlistenerapi:api") {
-        version {
-            strictly("3.9.10-SNAPSHOT")
-        }
-    }
+    implementation("net.axay:kspigot:1.18.2")
+
+    implementation("com.github.booksaw:BetterTeams:4.6.2")
 }
 
-group = "me.yoursole"
+group = "mynameisjeff"
 version = "1.0-SNAPSHOT"
-description = "CapturetheFlag"
+description = "sbmeventplugin"
 
 bukkit {
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
-    main = "me.yoursole.ctf.CTF"
+    main = "mynameisjeff.sbmeventplugin.SBMEventPlugin"
     apiVersion = "1.18"
-    authors = listOf("Yoursole", "My-Name-Is-Jeff")
-    depend = listOf("GlowAPI")
+    authors = listOf("My-Name-Is-Jeff")
+    depend = listOf("BetterTeams")
+    libraries = listOf("net.axay:kspigot:1.18.2")
 }
 
 tasks {
-
     processResources {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         filteringCharset = "UTF-8"
@@ -76,7 +75,7 @@ tasks {
         kotlinOptions {
             jvmTarget = "17"
             freeCompilerArgs =
-                listOf("-opt-in=kotlin.RequiresOptIn", "-Xjvm-default=all", "-Xrelease=8", "-Xbackend-threads=0")
+                listOf("-opt-in=kotlin.RequiresOptIn", "-Xjvm-default=all", "-Xrelease=17", "-Xbackend-threads=0")
         }
         kotlinDaemonJvmArguments.set(
             listOf(
@@ -94,20 +93,10 @@ tasks {
         configurations = listOf(shadowMe)
         archiveFileName.set(jar.get().archiveFileName)
     }
-
-    register<Copy>("copyPlugin") {
-        from("$buildDir/libs/")
-        include("*.jar")
-        into("$projectDir/server/plugins/")
-        dependsOn(shadowJar.get())
-    }
-
-    build.get().dependsOn(named("copyPlugin"))
 }
 
 kotlin {
     jvmToolchain {
-        check(this is JavaToolchainSpec)
         languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
