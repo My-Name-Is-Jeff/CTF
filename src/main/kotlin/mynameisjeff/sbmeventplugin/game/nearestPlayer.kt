@@ -31,6 +31,10 @@ private val listener = listen<PlayerMoveEvent>(register = false) { e ->
             }
             val (nearestEnemy, enemyDistance) = it
 
+            if (enemyDistance >= 250) {
+                return@let "§cNobody's nearby!".toComponent()
+            }
+
             val arrow = e.player.getArrowFor(nearestEnemy.location)
             return@let "§aTracking ".toComponent().append(nearestEnemy.teamDisplayName()).append(" §f§l${enemyDistance.toInt()}m ${arrow.char}".toComponent())
         }
