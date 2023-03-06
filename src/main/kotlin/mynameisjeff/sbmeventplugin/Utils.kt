@@ -2,7 +2,9 @@ package mynameisjeff.sbmeventplugin
 
 import org.bukkit.GameMode
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import kotlin.math.*
 
 object Utils {
@@ -61,3 +63,16 @@ val Player.isVanished
 
 val Player.isPlaying
     get() = isOnline && gameMode == GameMode.SURVIVAL && !isVanished && !isDead
+
+fun Player.doTelekinesis(stack: ItemStack) {
+    if (stack.type == Material.AIR) return
+    val items = inventory.addItem(stack)
+    if (items.isNotEmpty()) {
+        for (item in items.values) {
+            val drop = world.dropItemNaturally(location, item)
+            drop.pickupDelay = 5
+            drop.owner = uniqueId
+            drop.thrower = uniqueId
+        }
+    }
+}

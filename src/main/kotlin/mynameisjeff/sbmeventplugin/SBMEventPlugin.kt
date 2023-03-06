@@ -1,9 +1,6 @@
 package mynameisjeff.sbmeventplugin
 
-import mynameisjeff.sbmeventplugin.game.loadAutoRespawn
-import mynameisjeff.sbmeventplugin.game.loadNearestPlayerTracking
-import mynameisjeff.sbmeventplugin.game.loadSpectatorLock
-import mynameisjeff.sbmeventplugin.game.loadTimer
+import mynameisjeff.sbmeventplugin.game.*
 import net.axay.kspigot.main.KSpigot
 
 class SBMEventPlugin : KSpigot() {
@@ -11,6 +8,7 @@ class SBMEventPlugin : KSpigot() {
         loadAutoRespawn()
         loadNearestPlayerTracking()
         loadSpectatorLock()
+        loadTelekinesis()
         loadTimer()
     }
 }
