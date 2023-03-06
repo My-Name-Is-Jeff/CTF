@@ -41,7 +41,7 @@ private val listener = listen<PlayerMoveEvent>(register = false) { e ->
 
 private val command = command("togglenearestplayer") {
     requires {
-        it.hasPermission(it.server.operatorUserPermissionLevel)
+        it.hasPermission(3)
     }
     runs {
         if (toggled) {
