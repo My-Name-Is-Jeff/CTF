@@ -58,7 +58,7 @@ private val code = task(period = 10L, endCallback = {
         val ended = it.timeLeft <= 0
         if (ended) {
             it.bossBar.players.forEach { p ->
-                p.sendMessage("§eTImer ${it.title} §ehas ended!")
+                p.sendMessage("§eTimer ${it.title} §ehas ended!")
             }
             it.bossBar.hide()
             it.bossBar.removeAll()

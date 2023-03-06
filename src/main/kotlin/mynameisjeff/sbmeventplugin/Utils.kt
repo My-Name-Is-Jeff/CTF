@@ -1,5 +1,6 @@
 package mynameisjeff.sbmeventplugin
 
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import kotlin.math.*
@@ -54,3 +55,9 @@ object Utils {
         DOWNLEFT('↙');
     }
 }
+
+val Player.isVanished
+    get() = getMetadata("vanished").any { it.asBoolean() }
+
+val Player.isPlaying
+    get() = isOnline && gameMode == GameMode.SURVIVAL && !isVanished && !isDead

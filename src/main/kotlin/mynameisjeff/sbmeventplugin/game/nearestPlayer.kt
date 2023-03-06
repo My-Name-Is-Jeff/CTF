@@ -2,6 +2,7 @@ package mynameisjeff.sbmeventplugin.game
 
 import com.booksaw.betterTeams.Team
 import mynameisjeff.sbmeventplugin.Utils.getArrowFor
+import mynameisjeff.sbmeventplugin.isPlaying
 import net.axay.kspigot.commands.command
 import net.axay.kspigot.commands.runs
 import net.axay.kspigot.event.listen
@@ -10,7 +11,6 @@ import net.axay.kspigot.event.unregister
 import net.axay.kspigot.extensions.bukkit.toComponent
 import net.axay.kspigot.runnables.firstAsync
 import net.axay.kspigot.runnables.thenSync
-import org.bukkit.GameMode
 import org.bukkit.event.player.PlayerMoveEvent
 
 fun loadNearestPlayerTracking() {
@@ -25,7 +25,7 @@ private val listener = listen<PlayerMoveEvent>(register = false) { e ->
     firstAsync {
         val myTeam = Team.getTeam(e.player)
 
-        e.player.world.players.filter { p -> p != e.player && p.gameMode == GameMode.SURVIVAL && myTeam?.members?.contains(p) != true && !p.getMetadata("vanished").any { it.asBoolean() } }.associateWith { it.location.distance(e.to) }.minByOrNull { it.value }.let {
+        e.player.world.players.filter { p -> p != e.player && p.isPlaying && myTeam?.members?.contains(p) != true }.associateWith { it.location.distance(e.to) }.minByOrNull { it.value }.let {
             if (it == null) {
                 return@let "§cNobody's nearby!".toComponent()
             }
