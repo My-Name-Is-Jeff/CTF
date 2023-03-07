@@ -21,7 +21,13 @@ fun loadSpectatorLock() {
         if (e.player.gameMode == GameMode.SPECTATOR) {
             val myTeam = Team.getTeam(e.player) ?: return@listen
             if (myTeam.onlineMemebers.none { it != e.player && it.isPlaying }) {
-                e.player.kick("§cYou joined as spectator and your team has no more alive players.".toComponent())
+                if (e.player.isOp) {
+                    e.player.sendText {
+                        text("§aYou joined as spectator and your team has no more alive players, but you are an op so you can still spectate.")
+                    }
+                } else {
+                    e.player.kick("§cYou joined as spectator and your team has no more alive players.".toComponent())
+                }
             } else {
                 val nearestTeammate = myTeam.onlineMemebers.filter { it != e.player && it.isPlaying }.minByOrNull { it.location.distance(e.player.location) }
                 if (nearestTeammate != null) {
