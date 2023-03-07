@@ -1,5 +1,6 @@
 package mynameisjeff.sbmeventplugin.game
 
+import com.mojang.brigadier.arguments.StringArgumentType
 import net.axay.kspigot.commands.argument
 import net.axay.kspigot.commands.command
 import net.axay.kspigot.commands.literal
@@ -40,6 +41,22 @@ private val command = command("timer") {
                         val endTime = getArgument<Long>("epoch")
                         val timer = Timer(title, endTime)
                         timers.add(timer)
+                    }
+                }
+            }
+        }
+    }
+    literal("remove") {
+        argument<String>("title") {
+            runs {
+                val title = getArgument<String>("title")
+                timers.removeAll {
+                    if (it.title == title) {
+                        it.bossBar.hide()
+                        it.bossBar.removeAll()
+                        true
+                    } else {
+                        false
                     }
                 }
             }
