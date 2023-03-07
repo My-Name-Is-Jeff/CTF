@@ -25,10 +25,13 @@ fun loadSpectatorLock() {
             } else {
                 val nearestTeammate = myTeam.onlineMemebers.filter { it != e.player && it.isPlaying }.minByOrNull { it.location.distance(e.player.location) }
                 if (nearestTeammate != null) {
-                    e.player.sendText {
-                        text("§aYou are now spectating ")
-                        component(nearestTeammate.teamDisplayName())
-                        text("§a.")
+                    taskRunLater(1L) {
+                        e.player.spectatorTarget = nearestTeammate
+                        e.player.sendText {
+                            text("§aYou are now spectating ")
+                            component(nearestTeammate.teamDisplayName())
+                            text("§a.")
+                        }
                     }
                 }
             }
