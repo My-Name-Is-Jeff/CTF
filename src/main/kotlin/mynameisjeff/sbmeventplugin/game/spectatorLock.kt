@@ -71,19 +71,23 @@ fun loadSpectatorLock() {
         if (e.spectatorTarget !is Player) return@listen
         val myTeam = Team.getTeam(e.player) ?: return@listen
         if (myTeam.onlineMemebers.any { it != e.player && it.isPlaying }) {
-            e.player.sendText {
-                text("§cYou still have alive teammates, so you can't stop spectating.")
-            }
             if (!(e.spectatorTarget as Player).isOnline) {
                 val nearestTeammate = myTeam.onlineMemebers.filter { it != e.player && it.isPlaying }.minByOrNull { it.location.distance(e.player.location) }
                 if (nearestTeammate != null) {
-                    e.player.sendText {
-                        text("§aThe player you were spectating disconnected, so you are now spectating ")
-                        component(nearestTeammate.teamDisplayName())
-                        text("§a.")
+                    taskRunLater(1L) {
+                        e.player.spectatorTarget = nearestTeammate
+                        e.player.sendText {
+                            text("§aThe player you were spectating disconnected, so you are now spectating ")
+                            component(nearestTeammate.teamDisplayName())
+                            text("§a.")
+                        }
                     }
                 } else {
                     e.player.kick("§cThe player you were spectating disconnected and your team has no more alive players.".toComponent())
+                }
+            } else {
+                e.player.sendText {
+                    text("§cYou still have alive teammates, so you can't stop spectating.")
                 }
             }
             e.isCancelled = true
