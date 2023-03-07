@@ -6,9 +6,15 @@ import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent
 import mynameisjeff.sbmeventplugin.isPlaying
 import mynameisjeff.sbmeventplugin.isVanished
 import net.axay.kspigot.chat.sendText
+import net.axay.kspigot.commands.argument
+import net.axay.kspigot.commands.command
+import net.axay.kspigot.commands.runs
+import net.axay.kspigot.commands.suggestList
 import net.axay.kspigot.event.listen
 import net.axay.kspigot.extensions.bukkit.toComponent
 import net.axay.kspigot.runnables.taskRunLater
+import net.minecraft.commands.arguments.EntityArgument
+import net.minecraft.commands.arguments.TeamArgument
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerGameModeChangeEvent
@@ -113,6 +119,43 @@ fun loadSpectatorLock() {
             } else {
                 taskRunLater(1L) {
                     e.player.kick("§cYou died and your team has no more alive players.".toComponent())
+                }
+            }
+        }
+    }
+    command("teamspectate") {
+        requires {
+            (it.bukkitSender as? Player)?.gameMode == GameMode.SPECTATOR
+        }
+        argument("teammate", EntityArgument.player()) {
+            suggestList {
+                val sender = it.source.playerOrException.bukkitEntity
+                val myTeam = Team.getTeam(sender) ?: return@suggestList emptyList()
+                myTeam.onlineMemebers.filter { p -> p != sender && p.isPlaying }.map { p -> p.name }
+            }
+            runs {
+                val sender = player
+                val myTeam = Team.getTeam(sender) ?: return@runs
+                val teammate = EntityArgument.getPlayer(nmsContext, "teammate").bukkitEntity
+                if (teammate == sender || !teammate.isPlaying) {
+                    sender.sendText {
+                        text("§cNo player was found")
+                    }
+                    return@runs
+                }
+                if (myTeam.members.contains(teammate)) {
+                    sender.spectatorTarget = teammate
+                    sender.sendText {
+                        text("§aYou are now spectating ")
+                        component(teammate.teamDisplayName())
+                        text("§a.")
+                    }
+                } else {
+                    sender.sendText {
+                        text("§cYou can't spectate ")
+                        component(teammate.teamDisplayName())
+                        text("§c.")
+                    }
                 }
             }
         }
