@@ -26,6 +26,10 @@ private val command = command("timer") {
             literal("fromNow") {
                 argument<Long>("seconds") {
                     runs {
+                        if (!sender.hasPermission(3)) {
+                            sender.bukkitSender.sendMessage("§cYou don't have permission to do that.")
+                            return@runs
+                        }
                         val title = getArgument<String>("title")
                         val seconds = getArgument<Long>("seconds")
                         val endTime = System.currentTimeMillis() + seconds * 1000
@@ -37,6 +41,10 @@ private val command = command("timer") {
             literal("endTime") {
                 argument<Long>("epoch") {
                     runs {
+                        if (!sender.hasPermission(3)) {
+                            sender.bukkitSender.sendMessage("§cYou don't have permission to do that.")
+                            return@runs
+                        }
                         val title = getArgument<String>("title")
                         val endTime = getArgument<Long>("epoch")
                         val timer = Timer(title, endTime)

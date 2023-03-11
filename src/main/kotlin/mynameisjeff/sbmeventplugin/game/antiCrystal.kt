@@ -3,13 +3,14 @@ package mynameisjeff.sbmeventplugin.game
 import net.axay.kspigot.event.listen
 import org.bukkit.entity.EnderCrystal
 import org.bukkit.entity.Player
+import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.EntityDamageByBlockEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause
 
 fun loadAntiCrystal() {
-    listen<EntityDamageEvent> { e ->
+    listen<EntityDamageEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) { e ->
         if (e.entity !is Player) return@listen
 
         if (e is EntityDamageByEntityEvent && e.cause == DamageCause.ENTITY_EXPLOSION && e.damager is EnderCrystal) {

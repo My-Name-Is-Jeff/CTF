@@ -17,6 +17,7 @@ import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.commands.arguments.TeamArgument
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
+import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 
@@ -49,7 +50,7 @@ fun loadSpectatorLock() {
             }
         }
     }
-    listen<PlayerStartSpectatingEntityEvent> { e ->
+    listen<PlayerStartSpectatingEntityEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) { e ->
         if (e.player.isVanished) return@listen
         if (e.newSpectatorTarget !is Player) {
             e.player.sendText {
@@ -72,7 +73,7 @@ fun loadSpectatorLock() {
             e.player.kick("§cYou started spectating and your team has no more alive players.".toComponent())
         }
     }
-    listen<PlayerStopSpectatingEntityEvent> { e ->
+    listen<PlayerStopSpectatingEntityEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) { e ->
         if (e.player.isVanished || e.player.gameMode != GameMode.SPECTATOR) return@listen
         if (e.spectatorTarget !is Player) return@listen
         val myTeam = Team.getTeam(e.player) ?: return@listen
@@ -101,7 +102,7 @@ fun loadSpectatorLock() {
             e.player.kick("§cYou stopped spectating and your team has no more alive players.".toComponent())
         }
     }
-    listen<PlayerGameModeChangeEvent> { e ->
+    listen<PlayerGameModeChangeEvent>(priority = EventPriority.LOWEST, ignoreCancelled = true) { e ->
         if (e.cause == PlayerGameModeChangeEvent.Cause.HARDCORE_DEATH) {
             val myTeam = Team.getTeam(e.player) ?: return@listen
             val nearestTeammate = myTeam.onlineMemebers.filter { it != e.player && it.isPlaying }.minByOrNull { it.location.distance(e.player.location) }

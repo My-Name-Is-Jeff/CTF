@@ -48,6 +48,10 @@ private val command = command("togglenearestplayer") {
         it.hasPermission(3)
     }
     runs {
+        if (!sender.hasPermission(3)) {
+            sender.bukkitSender.sendMessage("§cYou don't have permission to do that.")
+            return@runs
+        }
         if (toggled) {
             listener.unregister()
             sender.bukkitSender.sendMessage("§cNearest player tracking disabled.")
