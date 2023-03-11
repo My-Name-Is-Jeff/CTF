@@ -8,7 +8,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.PlayerDeathEvent
 
 fun loadAutoRespawn() {
-    listen<PlayerDeathEvent>(priority = EventPriority.LOWEST, ignoreCancelled = true) {
+    listen<PlayerDeathEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) {
         taskRunLater(1) {
             (it.player as CraftPlayer).handle.connection.handleClientCommand(ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN))
         }

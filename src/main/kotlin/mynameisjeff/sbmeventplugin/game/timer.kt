@@ -1,6 +1,5 @@
 package mynameisjeff.sbmeventplugin.game
 
-import com.mojang.brigadier.arguments.StringArgumentType
 import net.axay.kspigot.commands.argument
 import net.axay.kspigot.commands.command
 import net.axay.kspigot.commands.literal

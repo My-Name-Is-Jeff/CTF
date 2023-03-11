@@ -102,7 +102,7 @@ fun loadSpectatorLock() {
             e.player.kick("§cYou stopped spectating and your team has no more alive players.".toComponent())
         }
     }
-    listen<PlayerGameModeChangeEvent>(priority = EventPriority.LOWEST, ignoreCancelled = true) { e ->
+    listen<PlayerGameModeChangeEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) { e ->
         if (e.cause == PlayerGameModeChangeEvent.Cause.HARDCORE_DEATH) {
             val myTeam = Team.getTeam(e.player) ?: return@listen
             val nearestTeammate = myTeam.onlineMemebers.filter { it != e.player && it.isPlaying }.minByOrNull { it.location.distance(e.player.location) }
