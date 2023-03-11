@@ -6,17 +6,22 @@ import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.entity.EntityDeathEvent
+import org.bukkit.inventory.ItemStack
 
 fun loadTelekinesis() {
     listen<BlockBreakEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) {event ->
-        if (!event.isDropItems || event.player.gameMode == GameMode.CREATIVE) return@listen
-        val drops = event.block.getDrops(event.player.inventory.itemInMainHand)
-        if (drops.isEmpty()) return@listen
-        drops.forEach(event.player::doTelekinesis)
+        if (event.player.gameMode == GameMode.CREATIVE) return@listen
         event.player.giveExp(event.expToDrop, true)
-        event.isDropItems = false
         event.expToDrop = 0
+    }
+    listen<BlockDropItemEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) {event ->
+        if (event.player.gameMode == GameMode.CREATIVE) return@listen
+        event.items.forEach {
+            event.player.doTelekinesis(it.itemStack)
+        }
+        event.items.clear()
     }
     listen<EntityDeathEvent>(priority = EventPriority.HIGHEST, ignoreCancelled = true) {event ->
         val entity = event.entity
